@@ -4,6 +4,10 @@
 import pygame
 pygame.init()
 
+
+clock = pygame.time.Clock()
+FPS = 60
+
 #Gerando tela do jogo
 window = pygame.display.set_mode((400,500))
 pygame.display.set_caption('Project Q.W.A.R.T.Z')
@@ -19,6 +23,9 @@ image = pygame.transform.scale(image, (1920,1080))
 
 #Loop principal
 while game:
+    
+    clock.tick(FPS)
+    
     #Trata eventos
     for event in pygame.event.get():
         #Verifica evento
