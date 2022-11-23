@@ -15,7 +15,7 @@ game = True
 #Inicia assets
 
 image = pygame.image.load('assets/img/grass.jpg').convert()
-image = pygame.transform.scale(image, (1920,1080)) 
+image = pygame.transform.scale(image, (1920,1080))
 
 #Loop principal
 while game:
@@ -24,10 +24,12 @@ while game:
         #Verifica evento
         if event.type == pygame.KEYDOWN:
             game = False
+        if event.type == pygame.QUIT:
+            game = False
             
     # ----- Gera saídas ----- #
     window.fill((0, 0, 0))  # Preenche com a cor branca
-    window.blit(image, (10, 10))
+    window.blit(image, (-760,-290))
     
     
     
