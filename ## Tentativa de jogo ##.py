@@ -4,7 +4,6 @@
 import pygame
 import sys
 from quartz import *
-from gerador_de_inimigos import *
 pygame.init()
 
 #Inicia assets
@@ -70,6 +69,7 @@ while True:
     
     player.main(tela)
     enemy.main(tela,tela_scroll)
+    enemy.move_to_player(player)
     
     for tiro in tiros_player:
         TiroJog.main(tela)
