@@ -7,7 +7,9 @@ from quartz import *
 pygame.init()
 
 #Inicia assets
-tela = pygame.display.set_mode((800,600))
+WIDTH = 800
+HEIGHT = 600
+tela = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption('Project Q.W.A.R.T.Z')
 
 image = pygame.image.load('assets/img/grass.jpg').convert()
@@ -15,11 +17,13 @@ image = pygame.transform.scale(image, (1920,1080))
 
 clock = pygame.time.Clock()
 
+tela_scroll = [0,0]
+
 player = Player(400,300,32,32)
+enemy = Enemy(800,600,16,16)
 velx = 5
 vely = velx
 
-tela_scroll = [0,0]
 
 tiros_player = []
 
@@ -43,7 +47,7 @@ while True:
                 tiros_player.append(TiroJog(player.x, player.y, mouse_x, mouse_y))
     
     
-    pygame.draw.rect(tela, (255,255,255), (100-tela_scroll[0],100-tela_scroll[1], 16, 16))
+    
     
     if keys[pygame.K_a]:
         tela_scroll[0] -= velx
@@ -64,9 +68,11 @@ while True:
         
     
     player.main(tela)
+    enemy.main(tela,tela_scroll)
+    enemy.move_to_player(player)
     
     for tiro in tiros_player:
-        tiro.main(tela)
+        TiroJog.main(tela)
             
         
     

@@ -1,7 +1,10 @@
 ## FUNCOES QUARTZ
 import pygame
+from pygame.locals import *
 import sys
 import math
+import random
+
 class Player:
     def __init__ (self, x, y, larg, alt):
         self.x = x
@@ -28,4 +31,34 @@ class TiroJog:
         self.y -= int(self.y_vel)
         
         pygame.draw.circle(tela, (0,0,0), (self.x, self.y), 5)
-        
+
+class Enemy:
+    def __init__(self,x,y,width,height):
+        pos = ['x','y']
+        pos = random.choice(pos)
+        if pos == 'x':
+            x = 0
+        else:
+            y = 0
+        self.x = random.randint(0,x)
+        if x == 0:
+            self.x = 0
+        self.y = random.randint(0,y)
+        if y == 0:
+            self.y = 0
+        self.width = width
+        self.height = height
+        self.speed = 2
+
+
+    def main(self,tela,scroll):
+        pygame.draw.rect(tela, (255,255,255), (self.x-scroll[0],self.y-scroll[1],self.width,self.height))
+    
+    def move_to_player(self, player):
+        # Find direction vector (dx, dy) between enemy and player.
+        dx, dy = player.x - self.x, player.y - self.y
+        dist = math.hypot(dx, dy)
+        dx, dy = dx / dist, dy / dist  # Normalize.
+        # Move along this normalized vector towards the player at current speed.
+        self.x += dx * self.speed
+        self.y += dy * self.speed
