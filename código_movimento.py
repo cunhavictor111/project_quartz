@@ -53,16 +53,16 @@ class Player:
 
         if self.moving_right:
             display.blit(pygame.transform.scale(
-                pygame.transform.flip(player_walk_images[self.animation_count // 4], True, False), (64, 84)),
+                pygame.transform.flip(player_walk_images[self.animation_count // 4], True, False), (75, 61)),
                          (self.x, self.y))
         elif self.moving_left and self.moving_vertical:
-            display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (64, 84)), (self.x, self.y))
+            display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (75, 61)), (self.x, self.y))
         elif self.moving_vertical:
-            display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (64, 84)), (self.x, self.y))
+            display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (75, 61)), (self.x, self.y))
         elif self.moving_left:
-            display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (64, 84)), (self.x, self.y))
+            display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (75, 61)), (self.x, self.y))
         else:
-            display.blit(pygame.transform.scale(player_idle_images[self.animation_count//4], (64, 84)), (self.x, self.y))
+            display.blit(pygame.transform.scale(player_idle_images[self.animation_count//4], (75, 61)), (self.x, self.y))
 
         self.handle_weapons(display)
 
@@ -100,8 +100,8 @@ class SlimeEnemy:
                                  pygame.image.load('Individual Sprites/slime-move-3.png')]
         self.animation_count = 0
         self.reset_offset = 0
-        self.offset_x = random.randrange(-150, 150)
-        self.offset_y = random.randrange(-150, 150)
+        self.offset_x = 0
+        self.offset_y = 0
 
     def main(self, display):
         if self.animation_count + 1 == 16:
@@ -109,8 +109,8 @@ class SlimeEnemy:
         self.animation_count += 1
 
         if self.reset_offset == 0:
-            self.offset_x = random.randrange(-150, 150)
-            self.offset_y = random.randrange(-150, 150)
+            self.offset_x = 0
+            self.offset_y = 0
             self.reset_offset = random.randrange(120, 150)
         else:
             self.reset_offset -= 1

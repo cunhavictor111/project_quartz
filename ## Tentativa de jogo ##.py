@@ -66,10 +66,11 @@ while True:
         for tiro in tiros_player:
             tiro.y += 5
         
-    
+    ghost = Ghost(400,300,32,32)
+
     player.main(tela)
     enemy.main(tela,tela_scroll)
-    enemy.move_to_player(player)
+    enemy.move_to_player(ghost)
     
     for tiro in tiros_player:
         TiroJog.main(tela)

@@ -13,7 +13,22 @@ class Player:
         self.alt = alt
     def main(self,tela):
         pygame.draw.rect(tela, (255,0,0), (self.x, self.y, self.larg, self.alt))
-        
+    def player_ghost(self):
+        self.x = self.x
+        self.y = self.y
+        self.larg = self.larg
+        self.alt = self.alt
+        self.speedx = 5
+        self.speedy = 5
+    def update_player_ghost(self,key):
+        if key == 'a':
+            self.x -= self.speedx
+        if key == 'd':
+            self.x += self.speedx
+        if key == 's':
+            self.y -= self.speedy
+        if key == 'w':
+            self.y += self.speedy
 
 class TiroJog:
     def __init__(self, x, y, mouse_x, mouse_y):
@@ -32,7 +47,7 @@ class TiroJog:
         
         pygame.draw.circle(tela, (0,0,0), (self.x, self.y), 5)
 
-class Enemy:
+class Enemy(object):
     def __init__(self,x,y,width,height):
         pos = ['x','y']
         pos = random.choice(pos)
@@ -53,6 +68,10 @@ class Enemy:
 
     def main(self,tela,scroll):
         pygame.draw.rect(tela, (255,255,255), (self.x-scroll[0],self.y-scroll[1],self.width,self.height))
+
+    def update(self):
+        self.x += self.speed
+        self.y += self.speed
     
     def move_to_player(self, player):
         # Find direction vector (dx, dy) between enemy and player.
@@ -62,3 +81,13 @@ class Enemy:
         # Move along this normalized vector towards the player at current speed.
         self.x += dx * self.speed
         self.y += dy * self.speed
+
+class Ghost:
+    def __init__(self,x,y,larg,alt):
+        self.x = x
+        self.y = y
+        self.larg = larg
+        self.alt = alt
+    def update(self,scroll):
+        self.x += scroll[0]
+        self.y += scroll[1]
