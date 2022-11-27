@@ -20,7 +20,7 @@ player_idle_images = [pygame.image.load("Individual Sprites/adventurer-idle-00.p
                       pygame.image.load('Individual Sprites/adventurer-idle-02.png'),
                       pygame.image.load('Individual Sprites/adventurer-idle-03.png')]
 
-player_weapon = pygame.image.load("Kar98k.png").convert()
+player_weapon = pygame.image.load("Individual Sprites/Kar98k.png").convert()
 player_weapon.set_colorkey((0, 0, 0))
 
 class Player:
