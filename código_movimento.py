@@ -20,6 +20,52 @@ player_idle_images = [pygame.image.load("Individual Sprites/adventurer-idle-00.p
                       pygame.image.load('Individual Sprites/adventurer-idle-02.png'),
                       pygame.image.load('Individual Sprites/adventurer-idle-03.png')]
 
+
+player_fireball = [pygame.image.load("Individual Sprites/img_0.png"),
+                   pygame.image.load("Individual Sprites/img_1.png"),
+                   pygame.image.load("Individual Sprites/img_2.png"),
+                   pygame.image.load("Individual Sprites/img_3.png"),
+                   pygame.image.load("Individual Sprites/img_4.png"),
+                   pygame.image.load("Individual Sprites/img_5.png"),
+                   pygame.image.load("Individual Sprites/img_6.png"),
+                   pygame.image.load("Individual Sprites/img_7.png"),
+                   pygame.image.load("Individual Sprites/img_8.png"),
+                   pygame.image.load("Individual Sprites/img_9.png"),
+                   pygame.image.load("Individual Sprites/img_10.png"),
+                   pygame.image.load("Individual Sprites/img_11.png"),
+                   pygame.image.load("Individual Sprites/img_12.png"),
+                   pygame.image.load("Individual Sprites/img_13.png"),
+                   pygame.image.load("Individual Sprites/img_14.png"),
+                   pygame.image.load("Individual Sprites/img_15.png"),
+                   pygame.image.load("Individual Sprites/img_16.png"),
+                   pygame.image.load("Individual Sprites/img_17.png"),
+                   pygame.image.load("Individual Sprites/img_18.png"),
+                   pygame.image.load("Individual Sprites/img_19.png"),
+                   pygame.image.load("Individual Sprites/img_20.png"),
+                   pygame.image.load("Individual Sprites/img_21.png"),
+                   pygame.image.load("Individual Sprites/img_22.png"),
+                   pygame.image.load("Individual Sprites/img_23.png"),
+                   pygame.image.load("Individual Sprites/img_24.png"),
+                   pygame.image.load("Individual Sprites/img_25.png"),
+                   pygame.image.load("Individual Sprites/img_26.png"),
+                   pygame.image.load("Individual Sprites/img_27.png"),
+                   pygame.image.load("Individual Sprites/img_28.png"),
+                   pygame.image.load("Individual Sprites/img_29.png"),
+                   pygame.image.load("Individual Sprites/img_30.png"),
+                   pygame.image.load("Individual Sprites/img_31.png"),
+                   pygame.image.load("Individual Sprites/img_32.png"),
+                   pygame.image.load("Individual Sprites/img_33.png"),
+                   pygame.image.load("Individual Sprites/img_34.png")]
+
+player_prefire = [pygame.image.load("Individual Sprites/preshoot1.png"),
+                  pygame.image.load("Individual Sprites/preshoot2.png"),
+                  pygame.image.load("Individual Sprites/preshoot3.png")]
+
+player_fireball2 = [pygame.image.load("Individual Sprites/shoot1.png"),
+                    pygame.image.load("Individual Sprites/shoot2.png"),
+                    pygame.image.load("Individual Sprites/shoot3.png"),
+                    pygame.image.load("Individual Sprites/shoot4.png")]
+
 player_weapon = pygame.image.load("Individual Sprites/Kar98k.png").convert()
 player_weapon.set_colorkey((0, 0, 0))
 
@@ -79,6 +125,7 @@ class PlayerBullet:
         self.width = mouse_x
         self.height = mouse_y
         self.speed = 15
+        self.animation_count = 0
         self.angle = math.atan2(y-mouse_y, x-mouse_x)
         self.x_vel = math.cos(self.angle) * self.speed
         self.y_vel = math.sin(self.angle) * self.speed
@@ -86,8 +133,14 @@ class PlayerBullet:
     def main(self, display):
         self.x -= int(self.x_vel)
         self.y -= int(self.y_vel)
-
-        pygame.draw.circle(display, (0, 0, 0), (self.x, self.y), 5)
+        
+        if self.animation_count + 1 >= 7:
+            self.animation_count = 0
+        self.animation_count += 1
+        if self.animation_count <=3:
+            display.blit(pygame.transform.scale(player_prefire[self.animation_count//3], (75, 61)), (self.x, self.y))
+        elif self.animation_count > 3:
+            display.blit(pygame.transform.scale(player_fireball2[self.animation_count//4], (75, 61)), (self.x, self.y))
 
 
 class SlimeEnemy:
@@ -134,6 +187,8 @@ player = Player(400, 300, 32, 32)
 display_scroll = [0, 0]
 
 player_bullets = []
+
+
 
 while True:
     display.fill((24, 164, 86))
