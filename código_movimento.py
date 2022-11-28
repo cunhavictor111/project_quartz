@@ -2,6 +2,7 @@ import pygame
 import sys
 import math
 import random
+import time
 
 pygame.init()
 
@@ -69,7 +70,7 @@ player_fireball2 = [pygame.image.load("Individual Sprites/shoot1.png"),
 player_weapon = pygame.image.load("Individual Sprites/Kar98k.png").convert()
 player_weapon.set_colorkey((0, 0, 0))
 
-class Player:
+class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
         self.x = x - 30
         self.y = y - 30
@@ -118,7 +119,7 @@ class Player:
         self.moving_vertical = False
 
 
-class PlayerBullet:
+class PlayerBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, mouse_x, mouse_y):
         self.x = x + 30
         self.y = y + 30
@@ -145,8 +146,14 @@ class PlayerBullet:
 
 class SlimeEnemy:
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
+        pos = ['x','y']
+        pos = random.choice(pos)
+        self.x = random.randint(0,x)
+        if pos == 'x':
+            self.x = 0
+        self.y = random.randint(0,y)
+        if pos == 'y':
+            self.y = 0
         self.animation_images = [pygame.image.load("Individual Sprites/slime-move-0.png"),
                                  pygame.image.load('Individual Sprites/slime-move-1.png'),
                                  pygame.image.load('Individual Sprites/slime-move-2.png'),
@@ -181,14 +188,20 @@ class SlimeEnemy:
                      (self.x-display_scroll[0], self.y-display_scroll[1]))
 
 
-enemies = [SlimeEnemy(400, 300)]
 player = Player(400, 300, 32, 32)
 
 display_scroll = [0, 0]
 
 player_bullets = []
-
-
+    
+c = 0
+list_enemies = []
+while c <= 5:
+    x = random.randint(0,800)
+    y = random.randint(0,600)
+    enemy = SlimeEnemy(x,y)
+    list_enemies.append(enemy)
+    c += 1
 
 while True:
     display.fill((24, 164, 86))
@@ -237,9 +250,9 @@ while True:
     for bullet in player_bullets:
         bullet.main(display)
 
-    for enemy in enemies:
-        enemy.main(display)
-
+    for z in list_enemies:
+        z.main(display)
+        time.sleep(2)
 
     clock.tick(60)
     pygame.display.update()
