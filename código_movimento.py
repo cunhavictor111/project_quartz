@@ -173,16 +173,6 @@ display_scroll = [0, 0]
 
 player_bullets = []
     
-c = 0
-list_enemies = []
-while c <= 5:
-    x = random.randint(0,800)
-    y = random.randint(0,600)
-    slime = SlimeEnemy(randx,randy,slimeimg)
-    all_enemies.add(slime)
-    all_sprites.add(slime)
-    list_enemies.append(slime)
-    c += 1
 
 while True:
     display.fill((24, 164, 86))
@@ -200,7 +190,24 @@ while True:
 
     keys = pygame.key.get_pressed()
 
-    pygame.draw.rect(display, (255, 255, 255), (100-display_scroll[0], 100-display_scroll[1], 16, 16))
+    while len(all_enemies) != 6:
+        x = random.randint(0,800)
+        y = random.randint(0,600)
+        slime = SlimeEnemy(randx,randy,slimeimg)
+        all_enemies.add(slime)
+        all_sprites.add(slime)
+    
+    for enemy in all_enemies:
+        enemy.main(display)
+
+    time_counter = pygame.time.get_ticks()
+    if time_counter%5000 == 0:
+        x = random.randint(0,800)
+        y = random.randint(0,600)
+        slime = SlimeEnemy(randx,randy,slimeimg)
+        all_enemies.add(slime)
+        all_sprites.add(slime)
+        slime.main(display)
 
     if keys[pygame.K_d]:
         display_scroll[0] += 5
@@ -231,8 +238,8 @@ while True:
     for bullet in player_bullets:
         bullet.main(display)
 
-    for z in list_enemies:
-        z.main(display)
+    
+
 
     clock.tick(60)
     pygame.display.update()
