@@ -186,6 +186,7 @@ player_bullets = []
     
 last_update = pygame.time.get_ticks()
 game = True
+life = 300
 while game:
     display.fill((24, 164, 86))
 
@@ -252,7 +253,11 @@ while game:
     for enemy in all_enemies:
         enemy_rect = pygame.Rect(enemy.pos_x,enemy.pos_y,32,32)
         if pygame.Rect.colliderect(rect_player,enemy_rect):
-            game = False
+            if life > 1:
+                life -= 0.5
+                print (f"Vidas restantes: {life}")
+            elif life <= 1:
+                game = False
     
 
 
