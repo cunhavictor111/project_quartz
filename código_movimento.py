@@ -31,7 +31,7 @@ player_fireball2 = [pygame.image.load("Individual Sprites/shoot1.png"),
 fireball = (pygame.image.load("Individual Sprites/shoot1.png"))
 fireball = pygame.transform.scale(fireball, (5,5))
 slimeimg = pygame.image.load('Individual Sprites/slime-move-0.png')
-slimeimg = pygame.transform.scale(slimeimg, (15,15))
+slimeimg = pygame.transform.scale(slimeimg, (60,60))
 
 player_weapon = pygame.image.load("Individual Sprites/Kar98k.png").convert()
 player_weapon.set_colorkey((0, 0, 0))
@@ -114,16 +114,10 @@ class PlayerBullet(pygame.sprite.Sprite):
 class SlimeEnemy(pygame.sprite.Sprite):
     def __init__(self, x, y,img):
         pygame.sprite.Sprite.__init__(self)
-        pos = ['x','y']
-        pos = random.choice(pos)
-        self.x = random.randint(0,x)
+        self.x = x
         self.image = img
         self.rect = self.image.get_rect()
-        if pos == 'x':
-            self.x = 0
-        self.y = random.randint(0,y)
-        if pos == 'y':
-            self.y = 0
+        self.y = y
         self.animation_images = [pygame.image.load("Individual Sprites/slime-move-0.png"),
                                  pygame.image.load('Individual Sprites/slime-move-1.png'),
                                  pygame.image.load('Individual Sprites/slime-move-2.png'),
@@ -132,6 +126,8 @@ class SlimeEnemy(pygame.sprite.Sprite):
         self.reset_offset = 0
         self.offset_x = 0
         self.offset_y = 0
+        self.pos_x = 0
+        self.pos_y=0
 
     def main(self, display):
         if self.animation_count + 1 == 16:
@@ -154,8 +150,13 @@ class SlimeEnemy(pygame.sprite.Sprite):
         elif player.y + self.offset_y < self.y-display_scroll[1]:
             self.y -= 1
 
+
+        self.pos_x = self.x-display_scroll[0]
+        self.pos_y = self.y-display_scroll[1]
+
         display.blit(pygame.transform.scale(self.animation_images[self.animation_count//4], (64, 60)),
                      (self.x-display_scroll[0], self.y-display_scroll[1]))
+
 
 
 #Criando Grupos#
@@ -173,10 +174,19 @@ randy = random.randint(0,600)
 
 display_scroll = [0, 0]
 
+while len(all_enemies) != 5:
+    randx = random.randint(0,800)
+    randy = random.randint(0,600)
+    slime = SlimeEnemy(randx,randy,slimeimg)
+    all_enemies.add(slime)
+    all_sprites.add(slime)
+
+
 player_bullets = []
     
-
-while True:
+last_update = pygame.time.get_ticks()
+game = True
+while game:
     display.fill((24, 164, 86))
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -192,24 +202,15 @@ while True:
 
     keys = pygame.key.get_pressed()
 
-    while len(all_enemies) != 6:
-        x = random.randint(0,800)
-        y = random.randint(0,600)
-        slime = SlimeEnemy(randx,randy,slimeimg)
-        all_enemies.add(slime)
-        all_sprites.add(slime)
+    now = pygame.time.get_ticks()
     
-    for enemy in all_enemies:
-        enemy.main(display)
-
-    time_counter = pygame.time.get_ticks()
-    if time_counter%5000 == 0:
+    if now - last_update > 1000:
         x = random.randint(0,800)
         y = random.randint(0,600)
-        slime = SlimeEnemy(randx,randy,slimeimg)
+        slime = SlimeEnemy(-x,-y,slimeimg)
         all_enemies.add(slime)
         all_sprites.add(slime)
-        slime.main(display)
+        last_update = now
 
     if keys[pygame.K_d]:
         display_scroll[0] += 5
@@ -235,11 +236,23 @@ while True:
             bullet.y += 5
         player.moving_vertical = True
 
+    all_sprites.update()
+
     player.main(display)
+    
+    for z in all_enemies:
+        z.main(display)
+
+    pygame.display.update()
 
     for bullet in player_bullets:
         bullet.main(display)
 
+    rect_player = pygame.Rect(400,300,32,32)
+    for enemy in all_enemies:
+        enemy_rect = pygame.Rect(enemy.pos_x,enemy.pos_y,32,32)
+        if pygame.Rect.colliderect(rect_player,enemy_rect):
+            game = False
     
 
 
