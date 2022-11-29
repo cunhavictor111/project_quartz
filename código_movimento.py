@@ -16,66 +16,34 @@ player_walk_images = [pygame.image.load("Individual Sprites/adventurer-run-00.pn
                       pygame.image.load('Individual Sprites/adventurer-run-04.png'),
                       pygame.image.load('Individual Sprites/adventurer-run-05.png')]
 
+player_image = (pygame.image.load('Individual Sprites/adventurer-run-00.png'))
+player_image = pygame.transform.scale(player_image, (32, 32))
+
 player_idle_images = [pygame.image.load("Individual Sprites/adventurer-idle-00.png"),
                       pygame.image.load('Individual Sprites/adventurer-idle-01.png'),
                       pygame.image.load('Individual Sprites/adventurer-idle-02.png'),
                       pygame.image.load('Individual Sprites/adventurer-idle-03.png')]
 
-
-player_fireball = [pygame.image.load("Individual Sprites/img_0.png"),
-                   pygame.image.load("Individual Sprites/img_1.png"),
-                   pygame.image.load("Individual Sprites/img_2.png"),
-                   pygame.image.load("Individual Sprites/img_3.png"),
-                   pygame.image.load("Individual Sprites/img_4.png"),
-                   pygame.image.load("Individual Sprites/img_5.png"),
-                   pygame.image.load("Individual Sprites/img_6.png"),
-                   pygame.image.load("Individual Sprites/img_7.png"),
-                   pygame.image.load("Individual Sprites/img_8.png"),
-                   pygame.image.load("Individual Sprites/img_9.png"),
-                   pygame.image.load("Individual Sprites/img_10.png"),
-                   pygame.image.load("Individual Sprites/img_11.png"),
-                   pygame.image.load("Individual Sprites/img_12.png"),
-                   pygame.image.load("Individual Sprites/img_13.png"),
-                   pygame.image.load("Individual Sprites/img_14.png"),
-                   pygame.image.load("Individual Sprites/img_15.png"),
-                   pygame.image.load("Individual Sprites/img_16.png"),
-                   pygame.image.load("Individual Sprites/img_17.png"),
-                   pygame.image.load("Individual Sprites/img_18.png"),
-                   pygame.image.load("Individual Sprites/img_19.png"),
-                   pygame.image.load("Individual Sprites/img_20.png"),
-                   pygame.image.load("Individual Sprites/img_21.png"),
-                   pygame.image.load("Individual Sprites/img_22.png"),
-                   pygame.image.load("Individual Sprites/img_23.png"),
-                   pygame.image.load("Individual Sprites/img_24.png"),
-                   pygame.image.load("Individual Sprites/img_25.png"),
-                   pygame.image.load("Individual Sprites/img_26.png"),
-                   pygame.image.load("Individual Sprites/img_27.png"),
-                   pygame.image.load("Individual Sprites/img_28.png"),
-                   pygame.image.load("Individual Sprites/img_29.png"),
-                   pygame.image.load("Individual Sprites/img_30.png"),
-                   pygame.image.load("Individual Sprites/img_31.png"),
-                   pygame.image.load("Individual Sprites/img_32.png"),
-                   pygame.image.load("Individual Sprites/img_33.png"),
-                   pygame.image.load("Individual Sprites/img_34.png")]
-
-player_prefire = [pygame.image.load("Individual Sprites/preshoot1.png"),
-                  pygame.image.load("Individual Sprites/preshoot2.png"),
-                  pygame.image.load("Individual Sprites/preshoot3.png")]
-
 player_fireball2 = [pygame.image.load("Individual Sprites/shoot1.png"),
                     pygame.image.load("Individual Sprites/shoot2.png"),
                     pygame.image.load("Individual Sprites/shoot3.png"),
                     pygame.image.load("Individual Sprites/shoot4.png")]
+fireball = (pygame.image.load("Individual Sprites/shoot1.png"))
+fireball = pygame.transform.scale(fireball, (5, 5))
+slimeimg = pygame.image.load('Individual Sprites/slime-move-0.png')
+slimeimg = pygame.transform.scale(slimeimg, (60, 60))
 
 player_weapon = pygame.image.load("Individual Sprites/Kar98k.png").convert()
 player_weapon.set_colorkey((0, 0, 0))
 
+
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height):
-        self.x = x - 30
-        self.y = y - 30
-        self.width = width
-        self.height = height
+    def __init__(self, img):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = 400 - 30
+        self.y = 300 - 30
+        self.image = img
+        self.rect = self.image.get_rect()
         self.animation_count = 0
         self.moving_right = False
         self.moving_left = False
@@ -85,13 +53,12 @@ class Player(pygame.sprite.Sprite):
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
         rel_x, rel_y = mouse_x - player.x, mouse_y - player.y
-        angle = (100/math.pi) * -math.atan2(rel_y, rel_x)
+        angle = (180 / math.pi) * -math.atan2(rel_y, rel_x)
 
         player_weapon_copy = pygame.transform.rotate(player_weapon, angle)
 
-        display.blit(player_weapon_copy, (self.x + 30 - int(player_weapon_copy.get_width()/2),
-                                          self.y + 40 - int(player_weapon_copy.get_height()/2)))
-
+        display.blit(player_weapon_copy, (self.x + 15 - int(player_weapon_copy.get_width() / 2),
+                                          self.y + 25 - int(player_weapon_copy.get_height() / 2)))
 
     def main(self, display):
         if self.animation_count + 1 >= 16:
@@ -101,59 +68,61 @@ class Player(pygame.sprite.Sprite):
         if self.moving_right:
             display.blit(pygame.transform.scale(
                 pygame.transform.flip(player_walk_images[self.animation_count // 4], True, False), (75, 61)),
-                         (self.x, self.y))
+                (self.x, self.y))
         elif self.moving_left and self.moving_vertical:
-            display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (75, 61)), (self.x, self.y))
+            display.blit(pygame.transform.scale(player_walk_images[self.animation_count // 4], (75, 61)),
+                         (self.x, self.y))
         elif self.moving_vertical:
-            display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (75, 61)), (self.x, self.y))
+            display.blit(pygame.transform.scale(player_walk_images[self.animation_count // 4], (75, 61)),
+                         (self.x, self.y))
         elif self.moving_left:
-            display.blit(pygame.transform.scale(player_walk_images[self.animation_count//4], (75, 61)), (self.x, self.y))
+            display.blit(pygame.transform.scale(player_walk_images[self.animation_count // 4], (75, 61)),
+                         (self.x, self.y))
         else:
-            display.blit(pygame.transform.scale(player_idle_images[self.animation_count//4], (75, 61)), (self.x, self.y))
+            display.blit(pygame.transform.scale(player_idle_images[self.animation_count // 4], (75, 61)),
+                         (self.x, self.y))
 
         self.handle_weapons(display)
 
-        #pygame.draw.rect(display, (255, 0, 0), (self.x, self.y, self.width, self.height))
+        # pygame.draw.rect(display, (255, 0, 0), (self.x, self.y, self.width, self.height))
         self.moving_right = False
         self.moving_left = False
         self.moving_vertical = False
 
 
 class PlayerBullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, mouse_x, mouse_y):
+    def __init__(self, x, y, mouse_x, mouse_y, img):
+        pygame.sprite.Sprite.__init__(self)
         self.x = x + 30
         self.y = y + 30
         self.width = mouse_x
         self.height = mouse_y
+        self.image = img
         self.speed = 15
         self.animation_count = 0
-        self.angle = math.atan2(y-mouse_y, x-mouse_x)
+        self.angle = math.atan2(y - mouse_y, x - mouse_x)
         self.x_vel = math.cos(self.angle) * self.speed
         self.y_vel = math.sin(self.angle) * self.speed
 
     def main(self, display):
         self.x -= int(self.x_vel)
         self.y -= int(self.y_vel)
-        
+
         if self.animation_count + 1 >= 7:
             self.animation_count = 0
         self.animation_count += 1
-        if self.animation_count <=3:
-            display.blit(pygame.transform.scale(player_prefire[self.animation_count//3], (75, 61)), (self.x, self.y))
-        elif self.animation_count > 3:
-            display.blit(pygame.transform.scale(player_fireball2[self.animation_count//4], (75, 61)), (self.x, self.y))
+        if self.animation_count < 8:
+            display.blit(pygame.transform.scale(player_fireball2[self.animation_count // 3], (75, 61)),
+                         (self.x, self.y))
 
 
-class SlimeEnemy:
-    def __init__(self, x, y):
-        pos = ['x','y']
-        pos = random.choice(pos)
-        self.x = random.randint(0,x)
-        if pos == 'x':
-            self.x = 0
-        self.y = random.randint(0,y)
-        if pos == 'y':
-            self.y = 0
+class SlimeEnemy(pygame.sprite.Sprite):
+    def __init__(self, x, y, img):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = x
+        self.image = img
+        self.rect = self.image.get_rect()
+        self.y = y
         self.animation_images = [pygame.image.load("Individual Sprites/slime-move-0.png"),
                                  pygame.image.load('Individual Sprites/slime-move-1.png'),
                                  pygame.image.load('Individual Sprites/slime-move-2.png'),
@@ -162,6 +131,8 @@ class SlimeEnemy:
         self.reset_offset = 0
         self.offset_x = 0
         self.offset_y = 0
+        self.pos_x = 0
+        self.pos_y = 0
 
     def main(self, display):
         if self.animation_count + 1 == 16:
@@ -174,36 +145,55 @@ class SlimeEnemy:
             self.reset_offset = random.randrange(120, 150)
         else:
             self.reset_offset -= 1
-        if player.x + self.offset_x > self.x-display_scroll[0]:
+        if player.x + self.offset_x > self.x - display_scroll[0]:
             self.x += 1
-        elif player.x + self.offset_x < self.x-display_scroll[0]:
+        elif player.x + self.offset_x < self.x - display_scroll[0]:
             self.x -= 1
 
-        if player.y + self.offset_y > self.y-display_scroll[1]:
+        if player.y + self.offset_y > self.y - display_scroll[1]:
             self.y += 1
-        elif player.y + self.offset_y < self.y-display_scroll[1]:
+        elif player.y + self.offset_y < self.y - display_scroll[1]:
             self.y -= 1
 
-        display.blit(pygame.transform.scale(self.animation_images[self.animation_count//4], (64, 60)),
-                     (self.x-display_scroll[0], self.y-display_scroll[1]))
+        self.pos_x = self.x - display_scroll[0]
+        self.pos_y = self.y - display_scroll[1]
+
+        display.blit(pygame.transform.scale(self.animation_images[self.animation_count // 4], (64, 60)),
+                     (self.x - display_scroll[0], self.y - display_scroll[1]))
 
 
-player = Player(400, 300, 32, 32)
+# Criando Grupos#
+
+all_sprites = pygame.sprite.Group()
+all_enemies = pygame.sprite.Group()
+
+# Criando player
+player = Player(player_image)
+all_sprites.add(player)
+
+# Criando inimigos#
+randx = random.randint(0, 800)
+randy = random.randint(0, 600)
 
 display_scroll = [0, 0]
 
-player_bullets = []
-    
-c = 0
-list_enemies = []
-while c <= 5:
-    x = random.randint(0,800)
-    y = random.randint(0,600)
-    enemy = SlimeEnemy(x,y)
-    list_enemies.append(enemy)
-    c += 1
+while len(all_enemies) != 5:
+    randx = random.randint(0, 800)
+    randy = random.randint(0, 600)
+    slime = SlimeEnemy(randx, randy, slimeimg)
+    all_enemies.add(slime)
+    all_sprites.add(slime)
 
-while True:
+player_bullets = []
+
+last_update = pygame.time.get_ticks()
+game = True
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+life = 500
+while game:
     display.fill((24, 164, 86))
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -215,11 +205,19 @@ while True:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                player_bullets.append(PlayerBullet(player.x, player.y, mouse_x, mouse_y))
+                player_bullets.append(PlayerBullet(player.x, player.y, mouse_x, mouse_y, fireball))
 
     keys = pygame.key.get_pressed()
 
-    pygame.draw.rect(display, (255, 255, 255), (100-display_scroll[0], 100-display_scroll[1], 16, 16))
+    now = pygame.time.get_ticks()
+
+    if now - last_update > 1000:
+        x = random.randint(0, 800)
+        y = random.randint(0, 600)
+        slime = SlimeEnemy(-x, -y, slimeimg)
+        all_enemies.add(slime)
+        all_sprites.add(slime)
+        last_update = now
 
     if keys[pygame.K_d]:
         display_scroll[0] += 5
@@ -245,14 +243,30 @@ while True:
             bullet.y += 5
         player.moving_vertical = True
 
+    all_sprites.update()
+
     player.main(display)
+
+    for z in all_enemies:
+        z.main(display)
+
+    pygame.display.update()
 
     for bullet in player_bullets:
         bullet.main(display)
 
-    for z in list_enemies:
-        z.main(display)
-        time.sleep(2)
+    rect_player = pygame.Rect(400, 300, 32, 32)
+    for enemy in all_enemies:
+        enemy_rect = pygame.Rect(enemy.pos_x, enemy.pos_y, 32, 32)
+        if pygame.Rect.colliderect(rect_player, enemy_rect):
+            if life > 1:
+                life -= 0.5
+                print(f"Vidas restantes: {life}")
+            elif life <= 1:
+                game = False
+
+    pygame.draw.rect(display, RED, (10, 10, 250, 5))
+    pygame.draw.rect(display, GREEN, (10, 10, (life//2), 5))
 
     clock.tick(60)
     pygame.display.update()
