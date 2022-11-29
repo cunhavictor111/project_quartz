@@ -42,6 +42,7 @@ class Player(pygame.sprite.Sprite):
         self.x = 400 - 30
         self.y = 300 - 30
         self.image = img
+        self.rect = self.image.get_rect()
         self.animation_count = 0
         self.moving_right = False
         self.moving_left = False
@@ -117,6 +118,7 @@ class SlimeEnemy(pygame.sprite.Sprite):
         pos = random.choice(pos)
         self.x = random.randint(0,x)
         self.image = img
+        self.rect = self.image.get_rect()
         if pos == 'x':
             self.x = 0
         self.y = random.randint(0,y)
@@ -233,6 +235,11 @@ while True:
 
     for z in list_enemies:
         z.main(display)
+        
+    hits = pygame.sprite.spritecollide(player, all_enemies, True)
+    
+    if len(hits) > 0:
+        sys.exit()
 
     clock.tick(60)
     pygame.display.update()
