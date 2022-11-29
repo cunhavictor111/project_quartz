@@ -85,12 +85,12 @@ class Player(pygame.sprite.Sprite):
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
         rel_x, rel_y = mouse_x - player.x, mouse_y - player.y
-        angle = (100/math.pi) * -math.atan2(rel_y, rel_x)
+        angle = (180/math.pi) * -math.atan2(rel_y, rel_x)
 
         player_weapon_copy = pygame.transform.rotate(player_weapon, angle)
 
-        display.blit(player_weapon_copy, (self.x + 30 - int(player_weapon_copy.get_width()/2),
-                                          self.y + 40 - int(player_weapon_copy.get_height()/2)))
+        display.blit(player_weapon_copy, (self.x + 15 - int(player_weapon_copy.get_width()/2),
+                                          self.y + 25 - int(player_weapon_copy.get_height()/2)))
 
 
     def main(self, display):
@@ -252,7 +252,6 @@ while True:
 
     for z in list_enemies:
         z.main(display)
-        time.sleep(2)
 
     clock.tick(60)
     pygame.display.update()
