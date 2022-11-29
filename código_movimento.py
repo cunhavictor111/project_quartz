@@ -98,11 +98,15 @@ class PlayerBullet(pygame.sprite.Sprite):
         self.width = mouse_x
         self.height = mouse_y
         self.image = img
+        self.rect = self.image.get_rect()
         self.speed = 15
         self.animation_count = 0
         self.angle = math.atan2(y - mouse_y, x - mouse_x)
         self.x_vel = math.cos(self.angle) * self.speed
         self.y_vel = math.sin(self.angle) * self.speed
+        
+        self.posi_x = 0
+        self.posi_y = 0
 
     def main(self, display):
         self.x -= int(self.x_vel)
@@ -114,6 +118,9 @@ class PlayerBullet(pygame.sprite.Sprite):
         if self.animation_count < 8:
             display.blit(pygame.transform.scale(player_fireball2[self.animation_count // 3], (75, 61)),
                          (self.x, self.y))
+        self.posi_x = self.x - display_scroll[0]
+        self.posi_y = self.y - display_scroll[1]
+        
 
 
 class SlimeEnemy(pygame.sprite.Sprite):
@@ -184,7 +191,7 @@ while len(all_enemies) != 5:
     all_enemies.add(slime)
     all_sprites.add(slime)
 
-player_bullets = []
+player_bullets = pygame.sprite.Group()
 
 last_update = pygame.time.get_ticks()
 game = True
@@ -205,7 +212,11 @@ while game:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                player_bullets.append(PlayerBullet(player.x, player.y, mouse_x, mouse_y, fireball))
+                player_bullets.add(PlayerBullet(player.x, player.y, mouse_x, mouse_y, fireball))
+
+                for bullet in player_bullets:
+                    bullet_rect = pygame.Rect(bullet.posi_x, bullet.posi_y, 5, 5)
+                    pygame.Rect.colliderect(enemy_rect, bullet_rect, True, True)
 
     keys = pygame.key.get_pressed()
 
