@@ -125,7 +125,7 @@ class PlayerBullet(pygame.sprite.Sprite):
         self.height = mouse_y
         self.image = img
         self.rect = self.image.get_rect()
-        self.speed = 5
+        self.speed = 10
         self.animation_count = 0
         self.angle = math.atan2(y - mouse_y, x - mouse_x)
         self.x_vel = math.cos(self.angle) * self.speed
@@ -178,14 +178,14 @@ class SlimeEnemy(pygame.sprite.Sprite):
         else:
             self.reset_offset -= 1
         if player.x + self.offset_x > self.x - display_scroll[0]:
-            self.x += 2
+            self.x += 4
         elif player.x + self.offset_x < self.x - display_scroll[0]:
-            self.x -= 2
+            self.x -= 4
 
         if player.y + self.offset_y > self.y - display_scroll[1]:
-            self.y += 2
+            self.y += 4
         elif player.y + self.offset_y < self.y - display_scroll[1]:
-            self.y -= 2
+            self.y -= 4
 
         self.pos_x = self.x - display_scroll[0]
         self.pos_y = self.y - display_scroll[1]
@@ -266,7 +266,7 @@ while game:
     keys = pygame.key.get_pressed()
     now = pygame.time.get_ticks()
 
-    if now - last_update > 250:
+    if now - last_update > 150:
         x = random.randint(0, 800)
         y = random.randint(0, 600)
         slime = SlimeEnemy(-x, -y, slimeimg)
