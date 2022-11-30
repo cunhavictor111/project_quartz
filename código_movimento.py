@@ -118,8 +118,8 @@ class PlayerBullet(pygame.sprite.Sprite):
         if self.animation_count < 8:
             display.blit(pygame.transform.scale(player_fireball2[self.animation_count // 3], (75, 61)),
                          (self.x, self.y))
-        self.posi_x = self.x - display_scroll[0]
-        self.posi_y = self.y - display_scroll[1]
+        self.posi_x -= int(self.x_vel)
+        self.posi_y -= int(self.y_vel)
         
 
 
@@ -200,6 +200,17 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 life = 500
+pontos = 0
+
+if pontos%20 == 0:
+    life += 50
+    
+
+
+
+
+
+
 while game:
     display.fill((24, 164, 86))
 
@@ -214,12 +225,21 @@ while game:
             if event.button == 1:
                 player_bullets.add(PlayerBullet(player.x, player.y, mouse_x, mouse_y, fireball))
 
-                for bullet in player_bullets:
-                    bullet_rect = pygame.Rect(bullet.posi_x, bullet.posi_y, 5, 5)
-                    pygame.Rect.colliderect(enemy_rect, bullet_rect, True, True)
+
+                 
+    for bullet in player_bullets:
+        bullet_rect = pygame.Rect(bullet.x, bullet.y, 5, 5)
+        for enemy in all_enemies:
+            enemy_rect = pygame.Rect(enemy.pos_x, enemy.pos_y, 32, 32)
+            if pygame.Rect.colliderect(bullet_rect, enemy_rect):
+                enemy.kill()
+                bullet.kill()
+                pontos += 1
+                print(pontos)
+                        
+       
 
     keys = pygame.key.get_pressed()
-
     now = pygame.time.get_ticks()
 
     if now - last_update > 1000:
