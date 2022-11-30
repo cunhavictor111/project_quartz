@@ -327,7 +327,7 @@ while game:
                 text2 = font2.render('Score: {0}'.format(pontos),True,(255,0,0))
                 display.blit(text2,(200,190))
                 pygame.display.update()
-                time.sleep(1)
+                time.sleep(3)
                 game = False
 
     pygame.draw.rect(display, RED, (382, 260, 50, 10))
