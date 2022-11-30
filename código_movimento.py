@@ -35,7 +35,7 @@ player_fireball2 = [pygame.image.load("Individual Sprites/shoot1.png"),
                     pygame.image.load("Individual Sprites/shoot3.png"),
                     pygame.image.load("Individual Sprites/shoot4.png")]
 fireball = (pygame.image.load("Individual Sprites/shoot1.png"))
-fireball = pygame.transform.scale(fireball, (5, 5))
+fireball = pygame.transform.scale(fireball, (20, 20))
 slimeimg = pygame.image.load('Individual Sprites/slime-move-0.png')
 slimeimg = pygame.transform.scale(slimeimg, (60, 60))
 
@@ -100,13 +100,13 @@ class Player(pygame.sprite.Sprite):
 class PlayerBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, mouse_x, mouse_y, img):
         pygame.sprite.Sprite.__init__(self)
-        self.x = x
-        self.y = y
+        self.x = x-20
+        self.y = y-20
         self.width = mouse_x
         self.height = mouse_y
         self.image = img
         self.rect = self.image.get_rect()
-        self.speed = 15
+        self.speed = 10
         self.animation_count = 0
         self.angle = math.atan2(y - mouse_y, x - mouse_x)
         self.x_vel = math.cos(self.angle) * self.speed
@@ -123,7 +123,7 @@ class PlayerBullet(pygame.sprite.Sprite):
             self.animation_count = 0
         self.animation_count += 1
         if self.animation_count < 8:
-            display.blit(pygame.transform.scale(player_fireball2[self.animation_count // 3], (75, 61)),
+            display.blit(pygame.transform.scale(player_fireball2[self.animation_count // 3], (150, 122)),
                          (self.x, self.y))
         self.posi_x -= int(self.x_vel)
         self.posi_y -= int(self.y_vel)
@@ -211,7 +211,7 @@ pontosa = 0
 
 
 while game:
-    font = pygame.font.SysFont(None, 48)
+    font = pygame.font.SysFont('Stencil', 48)
     text = font.render(f'{pontos}', True, (0, 0, 0))
     display.fill((24, 164, 86))
     display.blit(text, (10, 10))
@@ -228,7 +228,7 @@ while game:
                 player_bullets.add(PlayerBullet(player.x, player.y, mouse_x, mouse_y, fireball))
 
     for bullet in player_bullets:
-        bullet_rect = pygame.Rect(bullet.x, bullet.y, 5, 5)
+        bullet_rect = pygame.Rect(bullet.x, bullet.y, 20, 20)
         for enemy in all_enemies:
             enemy_rect = pygame.Rect(enemy.pos_x, enemy.pos_y, 32, 32)
             if pygame.Rect.colliderect(bullet_rect, enemy_rect):
@@ -298,10 +298,16 @@ while game:
                 life -= 0.5
                 print(f"Vidas restantes: {life}")
             elif life <= 1:
+                font2 = pygame.font.SysFont('stencil', 70)
+                text = font2.render('Game Over', True, (255, 0, 0))
+                display.fill((0,0,0))  # Preenche com a cor branca
+                display.blit(text, (200, 260))
+                pygame.display.update()
+                time.sleep(1)
                 game = False
 
-    pygame.draw.rect(display, RED, (395, 260, 25, 10))
-    pygame.draw.rect(display, GREEN, (395, 260, (life // 2), 10))
+    pygame.draw.rect(display, RED, (382, 260, 50, 10))
+    pygame.draw.rect(display, GREEN, (382, 260, (life*2 // 2), 10))
 
     clock.tick(60)
     pygame.display.update()
