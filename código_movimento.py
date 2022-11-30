@@ -4,7 +4,13 @@ import math
 import random
 import time
 
+pygame.mixer.init()
+
+# Iniciando o Pygame
 pygame.init()
+
+pygame.mixer.music.load('xDeviruchi - 8-bit Fantasy  & Adventure Music (2021)/xDeviruchi - Minigame .wav')
+pygame.mixer.music.play(loops=2, start=0.0)
 
 display = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
@@ -33,7 +39,7 @@ fireball = pygame.transform.scale(fireball, (5, 5))
 slimeimg = pygame.image.load('Individual Sprites/slime-move-0.png')
 slimeimg = pygame.transform.scale(slimeimg, (60, 60))
 
-player_weapon = pygame.image.load("Individual Sprites/Kar98k.png").convert()
+player_weapon = pygame.image.load("Individual Sprites/staff.png").convert()
 player_weapon.set_colorkey((0, 0, 0))
 
 
@@ -55,10 +61,11 @@ class Player(pygame.sprite.Sprite):
         rel_x, rel_y = mouse_x - player.x, mouse_y - player.y
         angle = (180 / math.pi) * -math.atan2(rel_y, rel_x)
 
-        player_weapon_copy = pygame.transform.rotate(player_weapon, angle)
+        player_weapon_copy = pygame.transform.scale(player_weapon, (80, 80))
+        player_weapon_copy_2 = pygame.transform.rotate(player_weapon_copy, angle)
 
-        display.blit(player_weapon_copy, (self.x + 15 - int(player_weapon_copy.get_width() / 2),
-                                          self.y + 25 - int(player_weapon_copy.get_height() / 2)))
+        display.blit(player_weapon_copy_2, (self.x + 45 - int(player_weapon_copy_2.get_width() / 2),
+                                          self.y + 25 - int(player_weapon_copy_2.get_height() / 2)))
 
     def main(self, display):
         if self.animation_count + 1 >= 16:
@@ -93,8 +100,8 @@ class Player(pygame.sprite.Sprite):
 class PlayerBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, mouse_x, mouse_y, img):
         pygame.sprite.Sprite.__init__(self)
-        self.x = x + 30
-        self.y = y + 30
+        self.x = x
+        self.y = y
         self.width = mouse_x
         self.height = mouse_y
         self.image = img
@@ -104,7 +111,7 @@ class PlayerBullet(pygame.sprite.Sprite):
         self.angle = math.atan2(y - mouse_y, x - mouse_x)
         self.x_vel = math.cos(self.angle) * self.speed
         self.y_vel = math.sin(self.angle) * self.speed
-        
+
         self.posi_x = 0
         self.posi_y = 0
 
@@ -118,9 +125,8 @@ class PlayerBullet(pygame.sprite.Sprite):
         if self.animation_count < 8:
             display.blit(pygame.transform.scale(player_fireball2[self.animation_count // 3], (75, 61)),
                          (self.x, self.y))
-        self.posi_x = self.x - display_scroll[0]
-        self.posi_y = self.y - display_scroll[1]
-        
+        self.posi_x -= int(self.x_vel)
+        self.posi_y -= int(self.y_vel)
 
 
 class SlimeEnemy(pygame.sprite.Sprite):
@@ -199,9 +205,16 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-life = 500
+life = 50
+pontos = 0
+pontosa = 0
+
+
 while game:
+    font = pygame.font.SysFont(None, 48)
+    text = font.render(f'{pontos}', True, (0, 0, 0))
     display.fill((24, 164, 86))
+    display.blit(text, (10, 10))
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
 
@@ -214,12 +227,23 @@ while game:
             if event.button == 1:
                 player_bullets.add(PlayerBullet(player.x, player.y, mouse_x, mouse_y, fireball))
 
-                for bullet in player_bullets:
-                    bullet_rect = pygame.Rect(bullet.posi_x, bullet.posi_y, 5, 5)
-                    pygame.Rect.colliderect(enemy_rect, bullet_rect, True, True)
+    for bullet in player_bullets:
+        bullet_rect = pygame.Rect(bullet.x, bullet.y, 5, 5)
+        for enemy in all_enemies:
+            enemy_rect = pygame.Rect(enemy.pos_x, enemy.pos_y, 32, 32)
+            if pygame.Rect.colliderect(bullet_rect, enemy_rect):
+                enemy.kill()
+                bullet.kill()
+                pontos += 1
+                print(pontos)
+
+    if pontos % 20 == 0 and pontos != pontosa:
+        life += 5
+        pontosa = pontos
+    if life > 50:
+        life = 50
 
     keys = pygame.key.get_pressed()
-
     now = pygame.time.get_ticks()
 
     if now - last_update > 1000:
@@ -276,8 +300,8 @@ while game:
             elif life <= 1:
                 game = False
 
-    pygame.draw.rect(display, RED, (10, 10, 250, 5))
-    pygame.draw.rect(display, GREEN, (10, 10, (life//2), 5))
+    pygame.draw.rect(display, RED, (395, 260, 25, 10))
+    pygame.draw.rect(display, GREEN, (395, 260, (life // 2), 10))
 
     clock.tick(60)
     pygame.display.update()
