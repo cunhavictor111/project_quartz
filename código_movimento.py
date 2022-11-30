@@ -4,7 +4,13 @@ import math
 import random
 import time
 
+pygame.mixer.init()
+
+# Iniciando o Pygame
 pygame.init()
+
+pygame.mixer.music.load('xDeviruchi - 8-bit Fantasy  & Adventure Music (2021)/xDeviruchi - Minigame .wav')
+pygame.mixer.music.play(loops=2, start=0.0)
 
 display = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
@@ -119,8 +125,8 @@ class PlayerBullet(pygame.sprite.Sprite):
         if self.animation_count < 8:
             display.blit(pygame.transform.scale(player_fireball2[self.animation_count // 3], (75, 61)),
                          (self.x, self.y))
-        self.posi_x = self.x - display_scroll[0]
-        self.posi_y = self.y - display_scroll[1]
+        self.posi_x -= int(self.x_vel)
+        self.posi_y -= int(self.y_vel)
 
 
 class SlimeEnemy(pygame.sprite.Sprite):
@@ -199,9 +205,16 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-life = 500
+life = 50
+pontos = 0
+pontosa = 0
+
+
 while game:
+    font = pygame.font.SysFont(None, 48)
+    text = font.render(f'{pontos}', True, (0, 0, 0))
     display.fill((24, 164, 86))
+    display.blit(text, (10, 10))
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
 
@@ -214,12 +227,23 @@ while game:
             if event.button == 1:
                 player_bullets.add(PlayerBullet(player.x, player.y, mouse_x, mouse_y, fireball))
 
-                for bullet in player_bullets:
-                    bullet_rect = pygame.Rect(bullet.posi_x, bullet.posi_y, 5, 5)
+    for bullet in player_bullets:
+        bullet_rect = pygame.Rect(bullet.x, bullet.y, 5, 5)
+        for enemy in all_enemies:
+            enemy_rect = pygame.Rect(enemy.pos_x, enemy.pos_y, 32, 32)
+            if pygame.Rect.colliderect(bullet_rect, enemy_rect):
+                enemy.kill()
+                bullet.kill()
+                pontos += 1
+                print(pontos)
 
+    if pontos % 20 == 0 and pontos != pontosa:
+        life += 5
+        pontosa = pontos
+    if life > 50:
+        life = 50
 
     keys = pygame.key.get_pressed()
-
     now = pygame.time.get_ticks()
 
     if now - last_update > 1000:
@@ -276,8 +300,8 @@ while game:
             elif life <= 1:
                 game = False
 
-    pygame.draw.rect(display, RED, (10, 10, 250, 5))
-    pygame.draw.rect(display, GREEN, (10, 10, (life // 2), 5))
+    pygame.draw.rect(display, RED, (395, 260, 25, 10))
+    pygame.draw.rect(display, GREEN, (395, 260, (life // 2), 10))
 
     clock.tick(60)
     pygame.display.update()
