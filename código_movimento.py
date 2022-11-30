@@ -322,8 +322,10 @@ while game:
             elif life <= 1:
                 font2 = pygame.font.SysFont('stencil', 70)
                 text = font2.render('Game Over', True, (255, 0, 0))
-                display.fill((0,0,0))  # Preenche com a cor branca
+                display.fill((0,0,0)) 
                 display.blit(text, (200, 260))
+                text2 = font2.render('Score: {0}'.format(pontos),True,(255,0,0))
+                display.blit(text2,(200,190))
                 pygame.display.update()
                 time.sleep(1)
                 game = False
