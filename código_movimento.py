@@ -43,6 +43,25 @@ player_weapon = pygame.image.load("Individual Sprites/staff.png").convert()
 player_weapon.set_colorkey((0, 0, 0))
 
 
+
+def cronos():
+    cloc = pygame.time.Clock()
+    minutes = 0
+    seconds = 0
+    mili = 0
+    
+    while True:
+        if mili > 1000:
+            seconds += 1
+            mili -= 1000
+        if seconds > 60:
+            minutes += 1
+            seconds -= 60
+            
+        mili += cloc.tick_busy_loop(60)
+        
+
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, img):
         pygame.sprite.Sprite.__init__(self)
@@ -106,7 +125,7 @@ class PlayerBullet(pygame.sprite.Sprite):
         self.height = mouse_y
         self.image = img
         self.rect = self.image.get_rect()
-        self.speed = 10
+        self.speed = 5
         self.animation_count = 0
         self.angle = math.atan2(y - mouse_y, x - mouse_x)
         self.x_vel = math.cos(self.angle) * self.speed
@@ -159,14 +178,14 @@ class SlimeEnemy(pygame.sprite.Sprite):
         else:
             self.reset_offset -= 1
         if player.x + self.offset_x > self.x - display_scroll[0]:
-            self.x += 1
+            self.x += 2
         elif player.x + self.offset_x < self.x - display_scroll[0]:
-            self.x -= 1
+            self.x -= 2
 
         if player.y + self.offset_y > self.y - display_scroll[1]:
-            self.y += 1
+            self.y += 2
         elif player.y + self.offset_y < self.y - display_scroll[1]:
-            self.y -= 1
+            self.y -= 2
 
         self.pos_x = self.x - display_scroll[0]
         self.pos_y = self.y - display_scroll[1]
@@ -215,6 +234,7 @@ while game:
     text = font.render(f'{pontos}', True, (0, 0, 0))
     display.fill((24, 164, 86))
     display.blit(text, (10, 10))
+    
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
 
@@ -238,7 +258,7 @@ while game:
                 print(pontos)
 
     if pontos % 20 == 0 and pontos != pontosa:
-        life += 5
+        life += 10
         pontosa = pontos
     if life > 50:
         life = 50
@@ -246,7 +266,7 @@ while game:
     keys = pygame.key.get_pressed()
     now = pygame.time.get_ticks()
 
-    if now - last_update > 1000:
+    if now - last_update > 250:
         x = random.randint(0, 800)
         y = random.randint(0, 600)
         slime = SlimeEnemy(-x, -y, slimeimg)
@@ -286,6 +306,8 @@ while game:
         z.main(display)
 
     pygame.display.update()
+    
+    
 
     for bullet in player_bullets:
         bullet.main(display)
