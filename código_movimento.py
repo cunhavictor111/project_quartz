@@ -199,11 +199,9 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-life = 500
+life = 50
 pontos = 0
-
-if pontos%20 == 0:
-    life += 50
+pontoant = 0
     
 
 
@@ -236,6 +234,11 @@ while game:
                 bullet.kill()
                 pontos += 1
                 print(pontos)
+    
+    if pontos%5 == 0 and pontos != pontoant:
+        life += 5
+        pontoant = pontos
+        print(pontoant)
                         
        
 
