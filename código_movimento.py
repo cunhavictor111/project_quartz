@@ -1,20 +1,27 @@
+# importa parâmetros
 import pygame
 import sys
 import math
 import random
 import time
 
+# inicia mixer
 pygame.mixer.init()
 
 # Iniciando o Pygame
 pygame.init()
 
+# carrega e toca música
 pygame.mixer.music.load('xDeviruchi - 8-bit Fantasy  & Adventure Music (2021)/xDeviruchi - Minigame .wav')
+assets = {}
+assets['hit_sound'] = pygame.mixer.Sound('hit.wav')
 pygame.mixer.music.play(loops=2, start=0.0)
 
+# define tela
 display = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 
+# importa sprites
 player_walk_images = [pygame.image.load("Individual Sprites/adventurer-run-00.png"),
                       pygame.image.load('Individual Sprites/adventurer-run-01.png'),
                       pygame.image.load('Individual Sprites/adventurer-run-02.png'),
@@ -35,7 +42,7 @@ player_fireball2 = [pygame.image.load("Individual Sprites/shoot1.png"),
                     pygame.image.load("Individual Sprites/shoot3.png"),
                     pygame.image.load("Individual Sprites/shoot4.png")]
 fireball = (pygame.image.load("Individual Sprites/shoot1.png"))
-fireball = pygame.transform.scale(fireball, (5, 5))
+fireball = pygame.transform.scale(fireball, (20, 20))
 slimeimg = pygame.image.load('Individual Sprites/slime-move-0.png')
 slimeimg = pygame.transform.scale(slimeimg, (60, 60))
 
@@ -43,6 +50,25 @@ player_weapon = pygame.image.load("Individual Sprites/staff.png").convert()
 player_weapon.set_colorkey((0, 0, 0))
 
 
+# define contador
+def cronos():
+    cloc = pygame.time.Clock()
+    minutes = 0
+    seconds = 0
+    mili = 0
+
+    while True:
+        if mili > 1000:
+            seconds += 1
+            mili -= 1000
+        if seconds > 60:
+            minutes += 1
+            seconds -= 60
+
+        mili += cloc.tick_busy_loop(60)
+
+
+# Classifica personagem do jogador
 class Player(pygame.sprite.Sprite):
     def __init__(self, img):
         pygame.sprite.Sprite.__init__(self)
@@ -55,6 +81,7 @@ class Player(pygame.sprite.Sprite):
         self.moving_left = False
         self.moving_vertical = False
 
+    # define arma do jogador
     def handle_weapons(self, display):
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
@@ -65,8 +92,9 @@ class Player(pygame.sprite.Sprite):
         player_weapon_copy_2 = pygame.transform.rotate(player_weapon_copy, angle)
 
         display.blit(player_weapon_copy_2, (self.x + 45 - int(player_weapon_copy_2.get_width() / 2),
-                                          self.y + 25 - int(player_weapon_copy_2.get_height() / 2)))
+                                            self.y + 25 - int(player_weapon_copy_2.get_height() / 2)))
 
+    # define animação de andar e arma na tela
     def main(self, display):
         if self.animation_count + 1 >= 16:
             self.animation_count = 0
@@ -97,16 +125,17 @@ class Player(pygame.sprite.Sprite):
         self.moving_vertical = False
 
 
+# classifica projétil
 class PlayerBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, mouse_x, mouse_y, img):
         pygame.sprite.Sprite.__init__(self)
-        self.x = x
-        self.y = y
+        self.x = x - 20
+        self.y = y - 20
         self.width = mouse_x
         self.height = mouse_y
         self.image = img
         self.rect = self.image.get_rect()
-        self.speed = 15
+        self.speed = 10
         self.animation_count = 0
         self.angle = math.atan2(y - mouse_y, x - mouse_x)
         self.x_vel = math.cos(self.angle) * self.speed
@@ -123,12 +152,13 @@ class PlayerBullet(pygame.sprite.Sprite):
             self.animation_count = 0
         self.animation_count += 1
         if self.animation_count < 8:
-            display.blit(pygame.transform.scale(player_fireball2[self.animation_count // 3], (75, 61)),
+            display.blit(pygame.transform.scale(player_fireball2[self.animation_count // 3], (150, 122)),
                          (self.x, self.y))
         self.posi_x -= int(self.x_vel)
         self.posi_y -= int(self.y_vel)
 
 
+# classifica slime / inimigo
 class SlimeEnemy(pygame.sprite.Sprite):
     def __init__(self, x, y, img):
         pygame.sprite.Sprite.__init__(self)
@@ -136,6 +166,7 @@ class SlimeEnemy(pygame.sprite.Sprite):
         self.image = img
         self.rect = self.image.get_rect()
         self.y = y
+        # define sprites do slime
         self.animation_images = [pygame.image.load("Individual Sprites/slime-move-0.png"),
                                  pygame.image.load('Individual Sprites/slime-move-1.png'),
                                  pygame.image.load('Individual Sprites/slime-move-2.png'),
@@ -147,7 +178,7 @@ class SlimeEnemy(pygame.sprite.Sprite):
         self.pos_x = 0
         self.pos_y = 0
 
-    def main(self, display):
+    def main(self, display):  # offset e movimentação do inimigo
         if self.animation_count + 1 == 16:
             self.animation_count = 0
         self.animation_count += 1
@@ -159,18 +190,18 @@ class SlimeEnemy(pygame.sprite.Sprite):
         else:
             self.reset_offset -= 1
         if player.x + self.offset_x > self.x - display_scroll[0]:
-            self.x += 1
+            self.x += 4
         elif player.x + self.offset_x < self.x - display_scroll[0]:
-            self.x -= 1
+            self.x -= 4
 
         if player.y + self.offset_y > self.y - display_scroll[1]:
-            self.y += 1
+            self.y += 4
         elif player.y + self.offset_y < self.y - display_scroll[1]:
-            self.y -= 1
+            self.y -= 4
 
         self.pos_x = self.x - display_scroll[0]
         self.pos_y = self.y - display_scroll[1]
-
+        # coloca inimigo na tela
         display.blit(pygame.transform.scale(self.animation_images[self.animation_count // 4], (64, 60)),
                      (self.x - display_scroll[0], self.y - display_scroll[1]))
 
@@ -190,6 +221,7 @@ randy = random.randint(0, 600)
 
 display_scroll = [0, 0]
 
+# cria spawn de inimigos em intervalos regulares
 while len(all_enemies) != 5:
     randx = random.randint(0, 800)
     randy = random.randint(0, 600)
@@ -209,9 +241,10 @@ life = 50
 pontos = 0
 pontosa = 0
 
-
+# inicia jogo
 while game:
-    font = pygame.font.SysFont(None, 48)
+    #  colore tela e coloca pontuação na tela
+    font = pygame.font.SysFont('Stencil', 48)
     text = font.render(f'{pontos}', True, (0, 0, 0))
     display.fill((24, 164, 86))
     display.blit(text, (10, 10))
@@ -221,24 +254,28 @@ while game:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-            pygame.QUIT
+            pygame.quit()
 
+        # define botão de tiro no mouse
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 player_bullets.add(PlayerBullet(player.x, player.y, mouse_x, mouse_y, fireball))
 
+    # colisão da bala com slime
     for bullet in player_bullets:
-        bullet_rect = pygame.Rect(bullet.x, bullet.y, 5, 5)
+        bullet_rect = pygame.Rect(bullet.x, bullet.y, 20, 20)
         for enemy in all_enemies:
             enemy_rect = pygame.Rect(enemy.pos_x, enemy.pos_y, 32, 32)
             if pygame.Rect.colliderect(bullet_rect, enemy_rect):
+                assets['hit_sound'].play()
                 enemy.kill()
                 bullet.kill()
                 pontos += 1
                 print(pontos)
 
+    # sistema de regeneração de vida
     if pontos % 20 == 0 and pontos != pontosa:
-        life += 5
+        life += 10
         pontosa = pontos
     if life > 50:
         life = 50
@@ -246,7 +283,7 @@ while game:
     keys = pygame.key.get_pressed()
     now = pygame.time.get_ticks()
 
-    if now - last_update > 1000:
+    if now - last_update > 150:
         x = random.randint(0, 800)
         y = random.randint(0, 600)
         slime = SlimeEnemy(-x, -y, slimeimg)
@@ -254,6 +291,7 @@ while game:
         all_sprites.add(slime)
         last_update = now
 
+    # movimento do personagem
     if keys[pygame.K_d]:
         display_scroll[0] += 5
         for bullet in player_bullets:
@@ -290,6 +328,7 @@ while game:
     for bullet in player_bullets:
         bullet.main(display)
 
+    # colisão do personagem com inimigo
     rect_player = pygame.Rect(400, 300, 32, 32)
     for enemy in all_enemies:
         enemy_rect = pygame.Rect(enemy.pos_x, enemy.pos_y, 32, 32)
@@ -298,10 +337,19 @@ while game:
                 life -= 0.5
                 print(f"Vidas restantes: {life}")
             elif life <= 1:
+                font2 = pygame.font.SysFont('stencil', 70)
+                text = font2.render('Game Over', True, (255, 0, 0))
+                display.fill((0, 0, 0))
+                display.blit(text, (200, 260))
+                text2 = font2.render('Score: {0}'.format(pontos), True, (255, 0, 0))
+                display.blit(text2, (200, 190))
+                pygame.display.update()
+                time.sleep(3)
                 game = False
 
-    pygame.draw.rect(display, RED, (395, 260, 25, 10))
-    pygame.draw.rect(display, GREEN, (395, 260, (life // 2), 10))
+    # coloca barra de vida
+    pygame.draw.rect(display, RED, (382, 260, 50, 10))
+    pygame.draw.rect(display, GREEN, (382, 260, (life * 2 // 2), 10))
 
     clock.tick(60)
     pygame.display.update()
