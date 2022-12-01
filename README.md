@@ -19,6 +19,9 @@
 - https://www.youtube.com/watch?v=sVbFS9qEl4Y&t=8s (vídeo usado para entender mecânicas de movimento e tiro em um jogo top_down)
 
 
-# DADOS ADICIONAIS^
+# DADOS ADICIONAIS:
 - O arquivo funcional chama-se "projet_QUARTZ_FINAL", apesar de o "Project QUARTZ" ser basicamente igual ( um copia e cola ) não pudemos identificar onde estava o problema.
 - O arquivo "código_base" é o arquivo final não compactado, ou seja, o maior deles uma vez que não depende de arquivos externos.
+
+# Vídeo do jogo:
+https://drive.google.com/file/d/1CJ3i7MRSMokZSV3q0eUrsE7WR3R_wMYQ/view?usp=sharing
