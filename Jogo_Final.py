@@ -1,7 +1,6 @@
 # importa parâmetros
 import pygame
 import sys
-import math
 import random
 import time
 from sprites import *
