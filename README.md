@@ -10,7 +10,7 @@
 
 # O jogo de nosso grupo é um shooter de estilo top down, para iniciar o jogo basta clicar para rodar o código quartz.py que o jogo inicia, a partir daí basta usar as teclas a, w, s, d para andar e o botão esquerdo do mouse para atirar nos inimigos, tendo como objetivo derrotar o maior número de inimigos possível antes de ser derrotado, ao final do jogo sua pontuação é mostrada na tela de game over.
 
-# IMPORTANTE: o código final está no arquivo "quartz.py", porém a maior parte de seu desenvolvimento está no arquivo "código_movimento.py"
+# IMPORTANTE: o código final está no arquivo "project QUARTZ.py", porém a maior parte de seu desenvolvimento está no arquivo "código_movimento.py"
 
 # FONTES:
 - https://rvros.itch.io/animated-pixel-hero (sprites do personagem)
