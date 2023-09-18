@@ -18,14 +18,6 @@ pygame.mixer.music.play(loops=2, start=0.0)
 
 
 # cria spawn de inimigos em intervalos regulares
-
-def spawn_slime():
-    randx = random.randint(0, 800)
-    randy = random.randint(0, 600)
-    slime = SlimeEnemy(player.x - randx, player.y - randy, slimeimg)
-    all_enemies.add(slime)
-    all_sprites.add(slime)
-
 while len(all_enemies) != 5:
     spawn_slime()
 

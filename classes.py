@@ -119,8 +119,6 @@ class SlimeEnemy(pygame.sprite.Sprite):
         self.image = img
         self.rect = self.image.get_rect()
         self.y = y
-        self.pos_x = 0
-        self.pos_y = 0
         # define sprites do slime
         self.animation_images = [pygame.image.load("Individual Sprites/slime-move-0.png"),
                                  pygame.image.load('Individual Sprites/slime-move-1.png'),
@@ -134,6 +132,7 @@ class SlimeEnemy(pygame.sprite.Sprite):
         self.animation_count += 1
         
         mov = SlimeMovement(self.x, self.y)
+        mov.main()
         self.pos_x = mov.pos_x
         self.pos_y = mov.pos_y
         self.x = mov.x
@@ -153,7 +152,7 @@ class SlimeMovement(SlimeEnemy):
         self.pos_x = 0
         self.pos_y = 0
 
-    def main(self, display):  # offset e movimentação do inimigo
+    def main(self):  # offset e movimentação do inimigo
         if self.reset_offset == 0:
             self.offset_x = 0
             self.offset_y = 0
@@ -172,6 +171,13 @@ class SlimeMovement(SlimeEnemy):
 
         self.pos_x = self.x - display_scroll[0]
         self.pos_y = self.y - display_scroll[1]
+
+def spawn_slime():
+    randx = random.randint(0, 800)
+    randy = random.randint(0, 600)
+    slime = SlimeEnemy(player.x - randx, player.y - randy, slimeimg)
+    all_enemies.add(slime)
+    all_sprites.add(slime)
 
 # Criando Grupos#
 
