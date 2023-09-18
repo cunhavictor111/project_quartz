@@ -19,11 +19,7 @@ pygame.mixer.music.play(loops=2, start=0.0)
 
 # cria spawn de inimigos em intervalos regulares
 while len(all_enemies) != 5:
-    randx = random.randint(0, 800)
-    randy = random.randint(0, 600)
-    slime = SlimeEnemy(randx, randy, slimeimg)
-    all_enemies.add(slime)
-    all_sprites.add(slime)
+    spawn_slime()
 
 player_bullets = pygame.sprite.Group()
 
@@ -60,6 +56,7 @@ while game:
     # colisão da bala com slime
     for bullet in player_bullets:
         bullet_rect = pygame.Rect(bullet.x, bullet.y, 20, 20)
+        bullet.main(display)
         for enemy in all_enemies:
             enemy_rect = pygame.Rect(enemy.pos_x, enemy.pos_y, 32, 32)
             if pygame.Rect.colliderect(bullet_rect, enemy_rect):
@@ -79,12 +76,8 @@ while game:
     keys = pygame.key.get_pressed()
     now = pygame.time.get_ticks()
 
-    if now - last_update > 150:
-        x = random.randint(0, 800)
-        y = random.randint(0, 600)
-        slime = SlimeEnemy(-x, -y, slimeimg)
-        all_enemies.add(slime)
-        all_sprites.add(slime)
+    if now - last_update > 1000:
+        spawn_slime()
         last_update = now
 
     # movimento do personagem
@@ -120,9 +113,6 @@ while game:
         z.main(display)
 
     pygame.display.update()
-
-    for bullet in player_bullets:
-        bullet.main(display)
 
     # colisão do personagem com inimigo
     rect_player = pygame.Rect(400, 300, 32, 32)
