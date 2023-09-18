@@ -119,12 +119,34 @@ class SlimeEnemy(pygame.sprite.Sprite):
         self.image = img
         self.rect = self.image.get_rect()
         self.y = y
+        self.pos_x = 0
+        self.pos_y = 0
         # define sprites do slime
         self.animation_images = [pygame.image.load("Individual Sprites/slime-move-0.png"),
                                  pygame.image.load('Individual Sprites/slime-move-1.png'),
                                  pygame.image.load('Individual Sprites/slime-move-2.png'),
                                  pygame.image.load('Individual Sprites/slime-move-3.png')]
         self.animation_count = 0
+    
+    def main(self, display):    
+        if self.animation_count + 1 == 16:
+            self.animation_count = 0
+        self.animation_count += 1
+        
+        mov = SlimeMovement(self.x, self.y)
+        self.pos_x = mov.pos_x
+        self.pos_y = mov.pos_y
+        self.x = mov.x
+        self.y = mov.y
+        # coloca inimigo na tela
+        display.blit(pygame.transform.scale(self.animation_images[self.animation_count // 4], (64, 60)),
+                     (self.x - display_scroll[0], self.y - display_scroll[1]))
+
+class SlimeMovement(SlimeEnemy):
+    def __init__(self,x,y):
+        super().__init__(x, y, slimeimg)
+        self.x = x
+        self.y = y
         self.reset_offset = 0
         self.offset_x = 0
         self.offset_y = 0
@@ -132,10 +154,6 @@ class SlimeEnemy(pygame.sprite.Sprite):
         self.pos_y = 0
 
     def main(self, display):  # offset e movimentação do inimigo
-        if self.animation_count + 1 == 16:
-            self.animation_count = 0
-        self.animation_count += 1
-
         if self.reset_offset == 0:
             self.offset_x = 0
             self.offset_y = 0
@@ -154,9 +172,6 @@ class SlimeEnemy(pygame.sprite.Sprite):
 
         self.pos_x = self.x - display_scroll[0]
         self.pos_y = self.y - display_scroll[1]
-        # coloca inimigo na tela
-        display.blit(pygame.transform.scale(self.animation_images[self.animation_count // 4], (64, 60)),
-                     (self.x - display_scroll[0], self.y - display_scroll[1]))
 
 # Criando Grupos#
 
